@@ -27,6 +27,7 @@
 #include "ssl.h"
 #include "vsftpver.h"
 #include "opts.h"
+#include "auth_user.h"
 
 /* Private local functions */
 static void handle_pwd(struct vsf_session* p_sess);
@@ -483,6 +484,8 @@ static void
 handle_cwd(struct vsf_session* p_sess)
 {
   int retval;
+  struct str_locate_result str_ret;
+  static struct mystr s_cwd_buf_mangle_str;
   resolve_tilde(&p_sess->ftp_arg_str, p_sess);
   if (!vsf_access_check_file(&p_sess->ftp_arg_str))
   {
@@ -492,6 +495,15 @@ handle_cwd(struct vsf_session* p_sess)
   retval = str_chdir(&p_sess->ftp_arg_str);
   if (retval == 0)
   {
+    str_getcwd(&s_cwd_buf_mangle_str);
+    str_ret = str_locate_str(&s_cwd_buf_mangle_str, &p_sess->home_str);
+    if (!str_ret.found || str_ret.index != 0) {
+          str_chdir(&p_sess->home_str);
+          vsf_cmdio_write(p_sess, FTP_NOPERM, "Permission denied, switch to home directory.");
+          return;
+          
+    }
+
     /* Handle any messages */
     vsf_banner_dir_changed(p_sess, FTP_CWDOK);
     vsf_cmdio_write(p_sess, FTP_CWDOK, "Directory successfully changed.");
@@ -500,6 +512,7 @@ handle_cwd(struct vsf_session* p_sess)
   {
     vsf_cmdio_write(p_sess, FTP_FILEFAIL, "Failed to change directory.");
   }
+  str_free(&s_cwd_buf_mangle_str);
 }
 
 static void

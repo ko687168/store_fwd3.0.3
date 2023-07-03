@@ -28,6 +28,7 @@
 #include "sysdeputil.h"
 #include "sslslave.h"
 #include "seccompsandbox.h"
+#include "auth_user.h"
 
 static void drop_all_privs(void);
 static void handle_sigchld(void* duff);
@@ -416,6 +417,7 @@ common_do_login(struct vsf_session* p_sess, const struct mystr* p_user_str,
     struct mystr guest_user_str = INIT_MYSTR;
     struct mystr chroot_str = INIT_MYSTR;
     struct mystr chdir_str = INIT_MYSTR;
+    struct mystr group_str = INIT_MYSTR;
     struct mystr userdir_str = INIT_MYSTR;
     unsigned int secutil_option = VSF_SECUTIL_OPTION_USE_GROUPS |
                                   VSF_SECUTIL_OPTION_NO_PROCS;
@@ -457,12 +459,22 @@ common_do_login(struct vsf_session* p_sess, const struct mystr* p_user_str,
                         p_user_str, p_orig_user_str);
     vsf_secutil_change_credentials(p_user_str, &userdir_str, &chroot_str,
                                    0, secutil_option);
+
+    if (vsf_get_user_group(&group_str, p_user_str) != 0)
+    {
+        die("Cannot get the user group");
+    }
+
+    str_append_text(&chdir_str, "/");
+    str_append_str(&chdir_str, &group_str);
+
     if (!str_isempty(&chdir_str))
     {
       (void) str_chdir(&chdir_str);
     }
     str_free(&guest_user_str);
     str_free(&chroot_str);
+    str_free(&group_str);
     str_free(&chdir_str);
     str_free(&userdir_str);
     p_sess->is_anonymous = anon;
