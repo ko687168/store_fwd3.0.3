@@ -9,6 +9,13 @@
 #include "sysutil.h"
 #include "str.h"
 #include "defs.h"
+#include <sys/types.h>
+#include <unistd.h>
+#include "tunables.h"
+#include "stdio.h"
+#include <sys/stat.h>
+#include <sys/file.h>
+#include <fcntl.h>
 
 #define DIE_DEBUG
 
