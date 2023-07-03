@@ -23,9 +23,6 @@
 #define _LARGEFILE64_SOURCE 1
 #define _LARGE_FILES 1
 
-/* For Linux, this adds nothing :-) */
-#include "port/porting_junk.h"
-
 #include <signal.h>
 #include <string.h>
 #include <stdlib.h>
