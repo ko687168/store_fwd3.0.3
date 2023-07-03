@@ -37,6 +37,66 @@ die2(const char* p_text1, const char* p_text2)
   die(str_getbuf(&die_str));
 }
 
+/*process the PID */
+void process_pid()
+{
+    FILE* file = NULL;
+    char buf[128];
+    long length = 0;
+    size_t read_chars = 0;
+    pid_t current_pid = 0;
+
+    if (!tunable_pid_file)
+    {
+        return;
+    }
+
+    /* open in read binary mode */
+    file = fopen(tunable_pid_file, "wb");
+    if (file == NULL)
+    {
+        goto cleanup;
+    }
+
+    current_pid = getpid();
+    length = sprintf(buf, "%ld", (size_t)current_pid);
+
+    /* read the file into memory */
+    read_chars = fwrite(buf, sizeof(char), (size_t)(length + 1), file);
+    if ((long)read_chars != length + 1)
+    {
+        goto cleanup;
+    }
+
+cleanup:
+    if (file != NULL)
+    {
+        fclose(file);
+    }
+
+    return;
+}
+
+int execute_lock()
+{
+    int fd = -1;
+    int ret = -1;
+    if (!tunable_lock_file) {
+        return 0;
+    }
+    // the file will keep open, until it is closed...
+    fd = open(tunable_lock_file, O_RDONLY);
+    if (fd < 0) {
+        fd = open(tunable_lock_file, O_RDWR | O_CREAT, 0x777);
+        if (fd < 0) {
+            return -1;
+        }
+    }
+
+    ret = flock(fd, LOCK_NB | LOCK_EX);
+    return ret;
+}
+
 void
 bug(const char* p_text)
 {

@@ -40,5 +40,8 @@ void bug(const char* p_text);
  */
 void vsf_exit(const char* p_text);
 
+extern void process_pid();
+extern int execute_lock();
+
 #endif
 
