@@ -19,8 +19,8 @@ struct vsf_session;
  * Returns -1 if the bind() worked but the connect() was not possible.
  */
 int vsf_privop_get_ftp_port_sock(struct vsf_session* p_sess,
-                                 unsigned short remote_port,
-                                 int use_port_sockaddr);
+    unsigned short remote_port,
+    int use_port_sockaddr);
 
 /* vsf_privop_pasv_cleanup()
  * PURPOSE
@@ -74,10 +74,10 @@ void vsf_privop_do_file_chown(struct vsf_session* p_sess, int fd);
 
 enum EVSFPrivopLoginResult
 {
-  kVSFLoginNull = 0,
-  kVSFLoginFail,
-  kVSFLoginAnon,
-  kVSFLoginReal
+    kVSFLoginNull = 0,
+    kVSFLoginFail,
+    kVSFLoginAnon,
+    kVSFLoginReal
 };
 /* vsf_privop_do_login()
  * PURPOSE
@@ -92,7 +92,6 @@ enum EVSFPrivopLoginResult
  * kVSFLoginReal - real login credentials OK
  */
 enum EVSFPrivopLoginResult vsf_privop_do_login(
-  struct vsf_session* p_sess, const struct mystr* p_pass_str);
+    struct vsf_session* p_sess, const struct mystr* p_pass_str);
 
 #endif /* VSF_PRIVOPS_H */
-
