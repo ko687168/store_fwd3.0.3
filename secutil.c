@@ -11,9 +11,9 @@
 #include "sysstr.h"
 #include "utility.h"
 #include "sysdeputil.h"
+#include "stdio.h"
 
-void
-vsf_secutil_change_credentials(const struct mystr* p_user_str,
+void vsf_secutil_change_credentials(const struct mystr* p_user_str,
     const struct mystr* p_dir_str,
     const struct mystr* p_ext_dir_str,
     unsigned int caps, unsigned int options)
@@ -24,10 +24,11 @@ vsf_secutil_change_credentials(const struct mystr* p_user_str,
         bug("vsf_secutil_change_credentials: not running as root");
     }
     p_user = str_getpwnam(p_user_str);
+    // printf("user: %s\n", str_getbuf(p_user));
     if (p_user == 0)
     {
-    die2("cannot locate user entry:", str_getbuf(p_user_str));
-    return;
+        // die2("cannot locate user entry1:", str_getbuf(p_user_str));
+        return;
     }
     {
         struct mystr dir_str = INIT_MYSTR;
@@ -79,7 +80,6 @@ vsf_secutil_change_credentials(const struct mystr* p_user_str,
                  */
                 if (retval != 0 && !(options & VSF_SECUTIL_OPTION_CHROOT))
                 {
-                    retval = caps;
                     retval = 0;
                 }
             }
