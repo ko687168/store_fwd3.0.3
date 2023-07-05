@@ -454,11 +454,6 @@ common_do_login(struct vsf_session* p_sess, const struct mystr* p_user_str,
         }
         calculate_chdir_dir(p_sess, was_anon, &userdir_str, &chroot_str, &chdir_str,
             p_user_str, p_orig_user_str);
-        vsf_log_line(p_sess, kVSFLogEntryDebug, &userdir_str);
-        vsf_log_line(p_sess, kVSFLogEntryDebug, &chroot_str);
-        vsf_log_line(p_sess, kVSFLogEntryDebug, &chdir_str);
-        vsf_log_line(p_sess, kVSFLogEntryDebug, p_user_str);
-        vsf_log_line(p_sess, kVSFLogEntryDebug, p_orig_user_str);
         vsf_secutil_change_credentials(p_user_str, &userdir_str, &chroot_str,
             0, secutil_option);
 
